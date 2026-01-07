@@ -81,6 +81,30 @@ Immediate attention required! Multiple high-risk behaviors detected.
 
 ## 🧩 System Architecture (High Level)
 
+```mermaid
+flowchart LR
+    A["Streamlit Frontend<br/>(Image Upload UI)"]
+    B["FastAPI Backend<br/>/analyze API"]
+    C["Detection Modules<br/>(Parallel)"]
+    D["Risk Scoring Engine<br/>(Rule + Weights)"]
+    E["Results + Risk Score<br/>Recommendations"]
+
+    subgraph C ["Detection Modules"]
+        C1["😴 Drowsiness<br/>EAR + MediaPipe"]
+        C2["😠 Emotion<br/>CNN (PyTorch)"]
+        C3["🦺 Seatbelt<br/>MobileNetV2"]
+        C4["🚬 Smoking<br/>MobileNetV2"]
+    end
+
+    A -- "HTTP POST" --> B
+    B --> C
+    C1 --> D
+    C2 --> D
+    C3 --> D
+    C4 --> D
+    D --> E
+```
+
 1. User uploads an image via Streamlit UI
 2. Image is sent to FastAPI backend
 3. Multiple detection modules analyze the image independently
