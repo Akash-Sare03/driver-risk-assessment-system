@@ -34,7 +34,7 @@ if uploaded_file:
         with st.spinner("Analyzing driver behavior..."):
             try:
                 response = requests.post(
-                    "http://localhost:8000/analyze",
+                    "http://127.0.0.1:8000/analyze",
                     files={"file": uploaded_file}
                 )
 
