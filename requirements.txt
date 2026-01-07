@@ -1,3 +1,9 @@
-altair
-pandas
+fastapi
+uvicorn
+opencv-python
+mediapipe
+numpy
+torch
+torchvision
+Pillow
 streamlit
