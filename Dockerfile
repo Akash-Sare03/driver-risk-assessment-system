@@ -1,41 +1,52 @@
 FROM python:3.9-slim
 
+# Set working directory
 WORKDIR /app
 
+# System dependencies required by OpenCV, MediaPipe, PIL
 RUN apt-get update && apt-get install -y \
     gcc \
     g++ \
-    libgl1-mesa-glx \
+    libgl1 \
     libglib2.0-0 \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
+# Copy requirements first (better Docker caching)
 COPY requirements.txt .
-RUN pip install --upgrade pip
-RUN pip install -r requirements.txt
-RUN pip install multiprocess
 
+RUN pip install --upgrade pip
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy entire project
 COPY . .
 
-# Create combined Python app
-RUN echo 'import subprocess\n\
+# Create process launcher (FastAPI + Streamlit)
+RUN printf "import subprocess\n\
 import time\n\
-import sys\n\
 \n\
-# Start FastAPI\n\
-fastapi_process = subprocess.Popen(["uvicorn", "backend.main:app", "--host", "0.0.0.0", "--port", "8000"])\n\
+# Start FastAPI (internal service)\n\
+fastapi = subprocess.Popen([\n\
+    'uvicorn', 'backend.main:app',\n\
+    '--host', '0.0.0.0', '--port', '8000'\n\
+])\n\
 \n\
-# Wait for FastAPI to start\n\
+# Wait for backend to be ready\n\
 time.sleep(5)\n\
 \n\
-# Start Streamlit\n\
-streamlit_process = subprocess.Popen(["streamlit", "run", "frontend/app.py", "--server.port", "8501", "--server.address", "0.0.0.0"])\n\
+# Start Streamlit (public UI)\n\
+streamlit = subprocess.Popen([\n\
+    'streamlit', 'run', 'frontend/app.py',\n\
+    '--server.port', '8501',\n\
+    '--server.address', '0.0.0.0',\n\
+    '--server.enableCORS', 'false'\n\
+])\n\
 \n\
-# Keep both running\n\
-fastapi_process.wait()\n\
-streamlit_process.wait()\n\
-' > run_both.py
+fastapi.wait()\n\
+streamlit.wait()\n" > run_both.py
 
+# Hugging Face exposes only one port
 EXPOSE 8501
 
+# Start both services
 CMD ["python", "run_both.py"]
