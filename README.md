@@ -295,3 +295,8 @@ streamlit run streamlit_app/app.py
 ## 📌 Conclusion
 
 This project demonstrates how multiple AI techniques can be combined into a **single intelligent safety system**, focusing not only on model accuracy but also on **system design, explainability, and real-world applicability**.
+---
+license: mit
+title: driver-risk-assessment-system
+sdk: streamlit
+---

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Python
 __pycache__/
 *.pyc
@@ -16,3 +17,23 @@ venv/
 
 # Large files (optional)
 *.mp4
+=======
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual env
+venv/
+.env/
+
+# OS
+.DS_Store
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Large files (optional)
+*.mp4
+>>>>>>> a97bc1959e69bd89d87f70e3622c95d9a59df1b1
